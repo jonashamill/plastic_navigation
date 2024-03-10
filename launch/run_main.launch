@@ -1,0 +1,15 @@
+<launch>
+
+    <arg name="robot_ns" default="robot1"/>
+
+    <rosparam command="load" file="$(find plastic_navigation)/config/activity_params.yaml" />
+  
+    <group ns="$(arg robot_ns)">
+
+        <node name="activity_calc" pkg="plastic_navigation" type="activity_calc.py"/>
+
+    </group>
+  
+  
+  </launch>
+  
