@@ -7,6 +7,7 @@ from rostopic import get_topic_list
 
 current_marker = 999
 marker = False
+marker_qty = 0
 
 
 def init_ros():
@@ -24,7 +25,7 @@ def init_ros():
     rospy.loginfo(f"Neo Threshold: {neo_threshold}, Plasticity: {use_plasticity}, Robot_NS: {robot_ns}")
 
     
-    rospy.Subscriber("tag_topic", Bool, tag_callback)
+    rospy.Subscriber(robot_ns + "tag_topic", Bool, tag_callback)
 
     
     return neo_threshold, use_plasticity, robot_ns
@@ -35,6 +36,10 @@ def tag_callback(msg):
 
     marker = msg.data
 
+def tag_qty_callback(msg):
+    global marker_qty
+
+    marker_qty = msg.data
 
 def choose_behaviour(neo_threshold):
         
@@ -80,8 +85,7 @@ def main():
 
             if marker:
 
-                neo_threshold += 1
-                marker = False
+                neo_threshold += 10
 
             else:
             
@@ -100,7 +104,19 @@ def main():
         rospy.loginfo(f"Elapsed time: {elapsed}")
 
         rospy.loginfo(f"Neo Threshold: {neo_threshold}, Neophilia: {neophilia}, Robot_NS: {robot_ns}")
+
+
+        metricsOutput = metricsOutput = "{},{},{},{},{}".format(elapsed, neo_threshold, neophilia, marker, marker_qty)
+        metricsMessage = String()
+        metricsMessage.data = metricsOutput
+
+        metricsPub = rospy.Publisher(robot_ns + 'metrics_topic', String, queue_size=10)
+        metricsPub.publish(metricsMessage)   
         
+        marker = False
+
+        plastic_pub = rospy.Publisher(robot_ns + 'plasticTopic', Bool, queue_size=10)
+        plastic_pub.publish(neophilia)
 
         rate.sleep()
 

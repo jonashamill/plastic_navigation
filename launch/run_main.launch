@@ -3,6 +3,8 @@
     <arg name="robot_ns" default="robot1"/>
 
     <rosparam command="load" file="$(find plastic_navigation)/config/activity_params.yaml" />
+    <rosparam command="load" file="$(find plastic_navigation)/config/patparams.yaml" />
+
 
     <arg name="cam_image_topic" default="camera/image_raw" />
     <arg name="cam_info_topic" default="camera/camera_info" />
@@ -24,6 +26,11 @@
   
 
         <node name="activity_calc" pkg="plastic_navigation" type="activity_calc.py"/>
+
+        <node name="patroller" pkg="plastic_navigation" type="patroller.py"/>
+
+        <node name="jogger" pkg="multi_sim" type="jogger_legacy.py" output="screen"/>
+
 
     </group>
   

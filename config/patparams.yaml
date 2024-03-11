@@ -1,0 +1,22 @@
+robot1:
+  patrols: 4
+  route: robot_1_wp.csv
+  start_node: 0
+  
+
+robot2:
+  patrols: 8
+  route: robot_2_wp.csv
+  start_node: 0
+
+
+robot3:
+  patrols: 5
+  route: robot_3_wp.csv
+  start_node: 0
+
+# trialNumber: 18
+# timeThresholdLow: 1
+# timeThresholdHigh: 1
+speed: fast
+# usePlasticity: false
