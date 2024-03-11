@@ -8,18 +8,22 @@ import random
 
 
 
-# def init_ros():
+def init_ros():
 
-#     rospy.init_node("activity_calc")
+    rospy.init_node("activity_calc")
+
+    rospy.loginfo("Starting Sim _")
 
 
-#     neo_threshold = rospy.get_param("/neo_threshold_init")
-#     use_plasticity = rospy.get_param("/use_plasticity")
-#     robot_ns = rospy.get_namespace()
 
-#     rospy.loginfo(f"Init: Neo Threshold: {neo_threshold}, Plasticity: {use_plasticity}, Robot_NS: {robot_ns}")
+    neo_threshold = int(rospy.get_param("/neo_threshold_init"))
+    use_plasticity = rospy.get_param("/use_plasticity")
+    robot_ns = rospy.get_namespace()
 
-#     return neo_threshold, use_plasticity, robot_ns
+
+    rospy.loginfo(f"Neo Threshold: {neo_threshold}, Plasticity: {use_plasticity}, Robot_NS: {robot_ns}")
+
+    return neo_threshold, use_plasticity, robot_ns
 
 
 
@@ -67,17 +71,9 @@ def main():
 
     print("Starting simpy")
 
-    # neo_threhold, use_plasticity, robot_ns = init_ros()
+    neo_threshold, use_plasticity, robot_ns = init_ros()
 
-    rospy.init_node("activity_calc")
-
-
-    neo_threshold = int(rospy.get_param("/neo_threshold_init"))
-    use_plasticity = rospy.get_param("/use_plasticity")
-    robot_ns = rospy.get_namespace()
-
-
-    rospy.loginfo(f"Neo Threshold: {neo_threshold}, Plasticity: {use_plasticity}, Robot_NS: {robot_ns}")
+    
     
     rate = rospy.Rate(1)
     marker = 1
@@ -85,21 +81,9 @@ def main():
     start = int(rospy.get_time())
 
 
-    
+    while not rospy.is_shutdown():
 
-    if use_plasticity:
-        
-        # choose_behaviour(neo_threhold)
-
-        
-
-        while not rospy.is_shutdown():
-
-            finish = int(rospy.get_time())
-
-            elapsed = (finish - start)
-
-            rospy.loginfo(f"Elapsed time: {elapsed}")
+        if use_plasticity:
 
             if marker:
 
@@ -108,35 +92,39 @@ def main():
             else:
             
                 neo_threshold -= 1
-
-
-
-
-            rand_no = random.randrange(0,101)
-
-            if neo_threshold < rand_no:
-
-                neophilia = 0
-
-                activity_output = 'Patrol - (Neophobic)'
-
-
-
-            else:
-                
-                neophilia = 1
-
-                activity_output = 'Explore - (Neophilic)'
-            
-            rospy.loginfo(f'Behavioural Tendancy: {activity_output}')
-
     
-            rospy.loginfo(f"Neo Threshold: {neo_threshold}, Neophilia: {neophilia}, Robot_NS: {robot_ns}")
 
+
+        finish = int(rospy.get_time())
+
+        elapsed = (finish - start)
+
+        rospy.loginfo(f"Elapsed time: {elapsed}")
+
+        rand_no = random.randrange(0,101)
+
+        if neo_threshold < rand_no:
+
+            neophilia = 0
+
+            activity_output = 'Patrol - (Neophobic)'
+
+
+
+        else:
             
+            neophilia = 1
 
-            rate.sleep()
+            activity_output = 'Explore - (Neophilic)'
+        
+        rospy.loginfo(f'Behavioural Tendancy: {activity_output}')
 
+
+        rospy.loginfo(f"Neo Threshold: {neo_threshold}, Neophilia: {neophilia}, Robot_NS: {robot_ns}")
+
+        
+
+        rate.sleep()
 
 
 
