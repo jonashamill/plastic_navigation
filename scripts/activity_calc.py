@@ -30,26 +30,6 @@ def init_ros():
     return neo_threshold, use_plasticity, robot_ns
 
 
-# def check_duplicate(iterable,check):
-#     for i in iterable:
-#         if i == check:
-#             return True
-
-
-
-# def marker_callback(msg):
-
-#     for marker in msg.markers:
-
-#         current_marker = marker.id
-
-#         print (current_marker) 
-
-#         tagPub = rospy.Publisher('tagTopic', Int32, queue_size=10)
-#         tagPub.publish(current_marker)
-
-#     return current_marker
-
 def tag_callback(msg):
     global marker
 
@@ -90,7 +70,6 @@ def main():
     # sets ros to run at a rate of 1Hz
     rate = rospy.Rate(1)
 
-    # marker = False
 
     start = int(rospy.get_time())
 
@@ -98,9 +77,6 @@ def main():
     while not rospy.is_shutdown():
 
         if use_plasticity:
-
-            pub_topics = get_topic_list()
-
 
             if marker:
 
@@ -125,7 +101,6 @@ def main():
 
         rospy.loginfo(f"Neo Threshold: {neo_threshold}, Neophilia: {neophilia}, Robot_NS: {robot_ns}")
         
-        # marker = False
 
         rate.sleep()
 
