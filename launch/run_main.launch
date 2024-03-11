@@ -3,8 +3,25 @@
     <arg name="robot_ns" default="robot1"/>
 
     <rosparam command="load" file="$(find plastic_navigation)/config/activity_params.yaml" />
-  
+
+    <arg name="cam_image_topic" default="camera/image_raw" />
+    <arg name="cam_info_topic" default="camera/camera_info" />
+
     <group ns="$(arg robot_ns)">
+
+
+        <node name="ar_track_alvar" pkg="ar_track_alvar" type="individualMarkersNoKinect" output="screen">
+
+        <rosparam command="load" file="$(find multi_sim)/config/alvar_tags/alvar.yaml" />
+        <param name="output_frame" value="$(arg robot_ns)/base_footprint"/>
+
+        <remap from="camera_image" to="$(arg cam_image_topic)" />
+        <remap from="camera_info" to="$(arg cam_info_topic)" />
+        </node>
+
+
+        <node name="ar_logger" pkg="plastic_navigation" type="print_tags.py"/>
+  
 
         <node name="activity_calc" pkg="plastic_navigation" type="activity_calc.py"/>
 

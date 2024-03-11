@@ -1,82 +1,96 @@
 #!/usr/bin/env python3
 
 import rospy
-from std_msgs.msg import Int32, String
+from std_msgs.msg import Int32, String, Bool
 import random
+from rostopic import get_topic_list
 
-
-
+current_marker = 999
+marker = False
 
 
 def init_ros():
 
     rospy.init_node("activity_calc")
+    
 
     rospy.loginfo("Starting Sim _")
-
 
 
     neo_threshold = int(rospy.get_param("/neo_threshold_init"))
     use_plasticity = rospy.get_param("/use_plasticity")
     robot_ns = rospy.get_namespace()
-
-
+    
     rospy.loginfo(f"Neo Threshold: {neo_threshold}, Plasticity: {use_plasticity}, Robot_NS: {robot_ns}")
 
+    
+    rospy.Subscriber("tag_topic", Bool, tag_callback)
+
+    
     return neo_threshold, use_plasticity, robot_ns
+
+
+# def check_duplicate(iterable,check):
+#     for i in iterable:
+#         if i == check:
+#             return True
 
 
 
 # def marker_callback(msg):
 
 #     for marker in msg.markers:
-#         global idList
-#         global currentMarker
 
-#     return
+#         current_marker = marker.id
+
+#         print (current_marker) 
+
+#         tagPub = rospy.Publisher('tagTopic', Int32, queue_size=10)
+#         tagPub.publish(current_marker)
+
+#     return current_marker
+
+def tag_callback(msg):
+    global marker
+
+    marker = msg.data
 
 
-
-def choose_behaviour(neo_threhold):
-
-
-    while not rospy.is_shutdown():
+def choose_behaviour(neo_threshold):
         
-        ranDomNo = random.randrange(0,101)
+    rand_no = random.randrange(0,101)
 
-        if neo_threhold < ranDomNo:
+    if neo_threshold < rand_no:
 
-            neophilia = 0
+        neophilia = 0
 
-            activity_output = 'Patrol - (Neophobic)'
+        activity_output = 'Patrol - (Neophobic)'
 
-
-
-        else:
-            
-            neophilia = 1
-
-            activity_output = 'Explore - (Neophilic)'
+    else:
         
-        rospy.loginfo(f'Behavioural Tendancy: {activity_output}')
+        neophilia = 1
 
+        activity_output = 'Explore - (Neophilic)'
+    
+    rospy.loginfo(f'Behavioural Tendancy: {activity_output}')
 
-   
+    return neophilia
 
 
 
 def main():
 
-    rospy.loginfo("Starting Sim")
+    global marker
 
-    print("Starting simpy")
+    rospy.loginfo("Starting Sim")
 
     neo_threshold, use_plasticity, robot_ns = init_ros()
 
     
-    
+    # sets ros to run at a rate of 1Hz
     rate = rospy.Rate(1)
-    marker = 1
+
+    # marker = False
 
     start = int(rospy.get_time())
 
@@ -85,15 +99,23 @@ def main():
 
         if use_plasticity:
 
+            pub_topics = get_topic_list()
+
+
             if marker:
 
                 neo_threshold += 1
+                marker = False
 
             else:
             
                 neo_threshold -= 1
+
+            neo_threshold = max(0, min(100, neo_threshold))
+            
     
 
+        neophilia = choose_behaviour(neo_threshold)
 
         finish = int(rospy.get_time())
 
@@ -101,28 +123,9 @@ def main():
 
         rospy.loginfo(f"Elapsed time: {elapsed}")
 
-        rand_no = random.randrange(0,101)
-
-        if neo_threshold < rand_no:
-
-            neophilia = 0
-
-            activity_output = 'Patrol - (Neophobic)'
-
-
-
-        else:
-            
-            neophilia = 1
-
-            activity_output = 'Explore - (Neophilic)'
-        
-        rospy.loginfo(f'Behavioural Tendancy: {activity_output}')
-
-
         rospy.loginfo(f"Neo Threshold: {neo_threshold}, Neophilia: {neophilia}, Robot_NS: {robot_ns}")
-
         
+        # marker = False
 
         rate.sleep()
 
@@ -132,4 +135,3 @@ def main():
 if __name__ == '__main__':
     
     main()
-    rospy.spin()
