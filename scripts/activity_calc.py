@@ -27,6 +27,9 @@ def init_ros():
     
     rospy.Subscriber(robot_ns + "tag_topic", Bool, tag_callback)
 
+    rospy.Subscriber(robot_ns + "tag_qty_topic", Int32, tag_qty_callback)
+
+
     
     return neo_threshold, use_plasticity, robot_ns
 

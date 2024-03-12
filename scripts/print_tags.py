@@ -36,6 +36,7 @@ def callback_ar_pose(msg):
 
 
     tag_pub = rospy.Publisher(robot_ns + 'tag_topic', Bool, queue_size=10) 
+    tag_qty_pub = rospy.Publisher(robot_ns + 'tag_qty_topic', Int32, queue_size=10)
     # rate = rospy.Rate(1)
    
 
@@ -48,18 +49,17 @@ def callback_ar_pose(msg):
             tag_pub.publish(True)
 
             if checkDuplicate(idListBuffer, currentMarker):
-                
+                continue
+            else:
                 idListBuffer.append(currentMarker)
 
-                idQTY += 1
+                idQTY += 1          
+                
 
-                tag_qty_pub = rospy.Publisher(robot_ns + 'tagTopic', Int32, queue_size=10)
-                tag_qty_pub.publish(idQTY)
-
-                if len(idListBuffer) > 1: #this will be replaced with time
-                    idListBuffer =[]
+    if len(idListBuffer) > 1: #this will be replaced with time
+        idListBuffer =[]
                  
-
+    tag_qty_pub.publish(idQTY)
 
 
 if __name__ == "__main__":

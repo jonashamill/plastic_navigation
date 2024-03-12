@@ -1,18 +1,18 @@
 robot1:
   patrols: 4
-  route: robot_1_wp.csv
+  route: robot_1_wp_2.csv
   start_node: 0
   
 
 robot2:
   patrols: 8
-  route: robot_2_wp.csv
+  route: robot_2_wp_2.csv
   start_node: 0
 
 
 robot3:
   patrols: 5
-  route: robot_3_wp.csv
+  route: robot_3_wp_2.csv
   start_node: 0
 
 # trialNumber: 18
