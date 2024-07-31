@@ -1,5 +1,5 @@
 robot1:
-  patrols: 4
+  patrols: 8
   route: robot_1_wp_2.csv
   start_node: 0
   
@@ -11,7 +11,7 @@ robot2:
 
 
 robot3:
-  patrols: 5
+  patrols: 8
   route: robot_3_wp_2.csv
   start_node: 0
 

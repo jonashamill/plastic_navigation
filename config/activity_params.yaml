@@ -1,7 +1,7 @@
 
-# neo_threshold_init: 50
-# use_plasticity: true
-# trialNumber: 0
+neo_threshold_init: 50
+use_plasticity: false
+trialNumber: 0
 
 
 use_sim_time: True

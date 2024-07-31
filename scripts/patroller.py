@@ -10,12 +10,12 @@ from actionlib_msgs.msg import GoalStatus, GoalStatusArray
 from geometry_msgs.msg import Pose, Point, Quaternion, Twist
 from tf.transformations import quaternion_from_euler
 from std_msgs.msg import Int32, Bool
+from std_srvs.srv import Empty
+
+
 import threading
 import random
-import os
-from datetime import datetime
-import csv
-import socket
+
 
 plasticMSG = 0
 tagMSG = False
@@ -117,6 +117,8 @@ class Patroller():
         self.tick = 0
         self.movebase_client()
 
+
+
     def movebase_client(self):
 
         
@@ -127,11 +129,27 @@ class Patroller():
         goal.target_pose.pose = self.pose_seq[self.goal_cnt]
         rospy.loginfo(robot_ns + "Sending goal pose " +
                       str(self.goal_cnt+1)+" to Action Server")
+        
+
+        # # Call the clear_costmaps service before sending a new goal
+       
+        # clear_costmaps_service = f'{robot_ns}/move_base/clear_costmaps'
+        # try:
+        #     rospy.wait_for_service(clear_costmaps_service, timeout=2.0)  # Wait for 2 seconds
+        #     clear_costmaps = rospy.ServiceProxy(clear_costmaps_service, Empty)
+        #     clear_costmaps()
+        #     rospy.loginfo(robot_ns + "Costmaps cleared")
+        # except rospy.ROSException as e:
+        #     rospy.logerr(robot_ns + "Failed to call clear_costmaps service: %s" % e)
+
+
+
         #rospy.loginfo(str(self.pose_seq[self.goal_cnt]))
         self.client.send_goal(goal)
         rospy.loginfo("==========*" + robot_ns + "GOAL SENT *==========")
         
-        
+
+
 
     def status_cb(self, msg):
 
@@ -173,6 +191,8 @@ class Patroller():
                     rospy.loginfo(robot_ns + "Repeating patrol ...")
                     self.goal_cnt = rospy.get_param(robot_ns + "start_node")
                     self.movebase_client()
+
+        
 
     def check_and_pause(self):
 

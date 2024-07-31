@@ -10,12 +10,12 @@ from ar_track_alvar_msgs.msg import AlvarMarkers
 
 idListBuffer = []
 idQTY = 0
-
+start = 0
 
 def rosInit():
      
     rospy.init_node("ar_logger")
-    
+    start = int(rospy.get_time())
 
     ar_subscriber = rospy.Subscriber("ar_pose_marker", AlvarMarkers, callback_ar_pose)
 
@@ -32,6 +32,7 @@ def callback_ar_pose(msg):
 
     global idListBuffer
     global idQTY
+    global start
     robot_ns = rospy.get_namespace()
 
 
@@ -42,7 +43,16 @@ def callback_ar_pose(msg):
 
     for marker in msg.markers:
 
-        if marker.id < 19:
+        finish = int(rospy.get_time())
+
+        elapsed = (finish - start)
+        
+        if elapsed < 600:
+            marker_threshold = 10
+        else:
+            marker_threshold = 19
+
+        if marker.id < marker_threshold:
 
             currentMarker = marker.id
 
